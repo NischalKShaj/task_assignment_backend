@@ -4,6 +4,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { corsOptions } from "./config/cors";
 import router from "./router/router";
 dotenv.config();
@@ -14,6 +15,9 @@ const app = express();
 // for parsing the data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// enabling the cookie parser
+app.use(cookieParser());
 
 // enabling the cors policy
 app.use(cors(corsOptions));

@@ -13,6 +13,8 @@ if (process.env.NODE_ENV === "development") {
   mongo_uri = process.env.MONGO_URI_PRODUCTION;
 }
 
+console.log("url", mongo_uri);
+
 // checking the mongodb_uri
 if (!mongo_uri) {
   throw new Error("mongo db uri not found");
