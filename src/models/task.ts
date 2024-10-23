@@ -13,6 +13,10 @@ const taskSchedule = new Schema({
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
   dueDate: {
     type: Date,
     required: true,

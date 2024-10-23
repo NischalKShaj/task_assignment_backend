@@ -3,6 +3,7 @@
 // importing the required modules
 import { Request, Response } from "express";
 import { User } from "../models/user";
+import { Task } from "../models/task";
 import { compare, hashSync } from "bcryptjs";
 import { SignupRequestBody } from "../types/types";
 import { generateToken } from "../middleware/generateJWT";
