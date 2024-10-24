@@ -7,11 +7,12 @@ dotenv.config();
 
 // for setting the environment of the application
 let mongo_uri: string | undefined = "";
-if (process.env.NODE_ENV === "development") {
-  mongo_uri = process.env.MONGODB_URI_DEVMODE;
-} else {
-  mongo_uri = process.env.MONGO_URI_PRODUCTION;
-}
+// if (process.env.NODE_ENV === "development") {
+//   mongo_uri = process.env.MONGODB_URI_DEVMODE;
+// } else {
+//   mongo_uri = process.env.MONGO_URI_PRODUCTION;
+// }
+mongo_uri = process.env.MONGODB_URI;
 
 console.log("url", mongo_uri);
 
