@@ -111,7 +111,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/custom.d.ts" // ensure custom types are included
+    "custom.d.ts" // ensure custom types are included
   ],
   "exclude": ["node_modules"]
 }
