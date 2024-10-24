@@ -26,4 +26,11 @@ router.get("/tasks/:date", authenticateUserJwt, taskController.getTasks);
 // router for adding a new task
 router.post("/add-task", authenticateUserJwt, taskController.addTask);
 
+// router for getting the tasks for a particular date and the employee
+router.get(
+  "/tasks/:date/:id",
+  authenticateUserJwt,
+  taskController.getEmployeeTask
+);
+
 export default router;

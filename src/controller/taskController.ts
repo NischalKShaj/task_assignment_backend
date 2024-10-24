@@ -4,16 +4,15 @@
 import { Request, Response } from "express";
 import { Task } from "../models/task";
 import { User } from "../models/user";
-import { create } from "domain";
 
 // creating the controller
 class TaskController {
-  // controller for getting the tasks
+  // controller for getting the tasks from a particular date
   public getTasks = async (req: Request, res: Response) => {
     try {
       const { date } = req.params;
       console.log("date", date);
-      const tasks = await Task.find({ createdAt: date });
+      const tasks = await Task.find({ dueDate: date });
 
       let manager: any[] = [];
       let employee: any[] = [];
@@ -99,7 +98,7 @@ class TaskController {
         endDate = convertToDate(dueDate);
       } catch (error: any) {
         res.status(400).json({ error: error.message });
-        return; // Return to prevent further execution
+        return;
       }
 
       const newTask = new Task({
@@ -123,6 +122,64 @@ class TaskController {
       });
     } catch (error) {
       console.error("error", error);
+    }
+  };
+
+  // controller for getting the task for a particular employee on the given date
+  public getEmployeeTask = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { date, id } = req.params;
+      console.log(`date:${date} id:${id}`);
+
+      // Find tasks that are due on the specified date
+      const tasks = await Task.find({ dueDate: date });
+
+      let manager: any[] = [];
+      let employee: any[] = [];
+
+      if (tasks.length > 0) {
+        let createdByIds = tasks.map((task) => task.createdBy);
+
+        let employeeIds = tasks.map((task) => task.assignedTo);
+
+        manager = await User.find({ _id: { $in: createdByIds } }).lean();
+
+        employee = await User.find({ _id: { $in: employeeIds } }).lean();
+      }
+
+      const employeeDetails = await User.findOne({ _id: id });
+      if (!employeeDetails) {
+        res.status(403).json("user not found");
+        return;
+      }
+
+      const tasksWithDetail = tasks.filter(
+        (task) => task.assignedTo.toString() == id
+      );
+
+      const managerMap = new Map(
+        manager.map((m) => [m._id.toString(), m.username])
+      );
+      const employeeMap = new Map(
+        employee.map((e) => [e._id.toString(), e.username])
+      );
+
+      const tasksWithDetails = tasksWithDetail.map((task) => ({
+        ...task,
+        managerName:
+          managerMap.get(task.createdBy.toString()) || "Unknown Manager",
+        employeeName:
+          employeeMap.get(task.assignedTo.toString()) || "Unknown Employee",
+      }));
+
+      console.log("filtered task", tasksWithDetails);
+
+      res.status(202).json(tasksWithDetails);
+    } catch (error) {
+      console.error("error");
     }
   };
 }
