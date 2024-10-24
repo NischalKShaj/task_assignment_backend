@@ -14,7 +14,7 @@ if (!baseUrl) {
 // creating the options for the cors
 export const corsOptions = {
   origin: baseUrl,
-  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"],
   allowedHeaders: [
     "Origin",
     "X-Requested-With",
