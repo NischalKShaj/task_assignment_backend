@@ -33,4 +33,24 @@ router.get(
   taskController.getEmployeeTask
 );
 
+// router for editing a particular task
+router.put("/update-task/:id", authenticateUserJwt, taskController.editTask);
+
+// router for deleting the task
+router.delete(
+  "/remove-task/:id",
+  authenticateUserJwt,
+  taskController.removeTask
+);
+
+// router for updating the status of the task
+router.put(
+  "/update-status/:id",
+  authenticateUserJwt,
+  taskController.updateStatus
+);
+
+// router for logout
+router.get("/logout", authenticateUserJwt, homeController.userLogout);
+
 export default router;

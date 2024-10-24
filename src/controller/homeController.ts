@@ -86,6 +86,7 @@ class HomeController {
         email: user.email,
         role: user.role,
         _id: user._id,
+        profile: user.profileImage,
       };
 
       res
@@ -95,6 +96,15 @@ class HomeController {
     } catch (error) {
       console.error("Error occurred in the login", error);
       res.status(500).json({ message: error });
+    }
+  };
+
+  // controller for user logout
+  public userLogout = async (req: Request, res: Response) => {
+    try {
+      res.clearCookie("access_token").status(200).json("user logged out");
+    } catch (error) {
+      console.error("error", error);
     }
   };
 }

@@ -182,6 +182,60 @@ class TaskController {
       console.error("error");
     }
   };
+
+  // controller for editing the task
+  public editTask = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { title, description } = req.body;
+      const { id } = req.params;
+      console.log(id);
+      console.log(`title${title} description:${description}`);
+      const existingTask = await Task.findByIdAndUpdate(
+        { _id: id },
+        { $set: { title: title, description: description } },
+        { new: true }
+      );
+      if (!existingTask) {
+        res.status(403).json("task not found");
+        return;
+      }
+      console.log("existing task", existingTask);
+      res.status(200).json(existingTask);
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  // controller for removing the task
+  public removeTask = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      await Task.findByIdAndDelete({ _id: id });
+      res.status(200).json("deleted successfully");
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  // controller for updating the status of the task
+  public updateStatus = async (req: Request, res: Response) => {
+    try {
+      const { status } = req.body;
+      const { id } = req.params;
+
+      const updatedTask = await Task.findByIdAndUpdate(
+        { _id: id },
+        { $set: { status: status } },
+        { new: true }
+      );
+
+      console.log("status", updatedTask?.status);
+      res.status(200).json("updated");
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
 }
 
 export const taskController = new TaskController();
