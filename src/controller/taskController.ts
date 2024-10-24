@@ -11,7 +11,6 @@ class TaskController {
   public getTasks = async (req: Request, res: Response) => {
     try {
       const { date } = req.params;
-      console.log("date", date);
       const tasks = await Task.find({ dueDate: date });
 
       let manager: any[] = [];
@@ -41,7 +40,6 @@ class TaskController {
           employeeMap.get(task.assignedTo.toString()) || "Unknown Employee",
       }));
 
-      console.log("tasksWithDetails", tasksWithDetails);
       res.status(202).json(tasksWithDetails);
     } catch (error) {
       console.error("error", error);
@@ -55,7 +53,6 @@ class TaskController {
         req.body;
 
       const employeeDetails = await User.findOne({ email: employee });
-      console.log("employee", employeeDetails);
 
       if (!employeeDetails) {
         res.status(403).json("employee not found");
@@ -63,15 +60,11 @@ class TaskController {
       }
 
       const managerDetails = await User.findById({ _id: createdBy });
-      console.log("manager", managerDetails?.username);
 
       if (!managerDetails) {
         res.status(403).json("manager not found");
         return;
       }
-
-      // Log the input date strings for debugging
-      console.log("Created At:", createdAt, "Due Date:", dueDate);
 
       // Validate and convert the date strings
       const convertToDate = (dateString: string): Date => {
@@ -111,8 +104,6 @@ class TaskController {
         status: "pending",
       });
 
-      console.log("new Task", newTask);
-
       await newTask.save();
 
       res.status(201).json({
@@ -132,7 +123,6 @@ class TaskController {
   ): Promise<void> => {
     try {
       const { date, id } = req.params;
-      console.log(`date:${date} id:${id}`);
 
       // Find tasks that are due on the specified date
       const tasks = await Task.find({ dueDate: date });
@@ -175,8 +165,6 @@ class TaskController {
           employeeMap.get(task.assignedTo.toString()) || "Unknown Employee",
       }));
 
-      console.log("filtered task", tasksWithDetails);
-
       res.status(202).json(tasksWithDetails);
     } catch (error) {
       console.error("error");
@@ -188,8 +176,7 @@ class TaskController {
     try {
       const { title, description } = req.body;
       const { id } = req.params;
-      console.log(id);
-      console.log(`title${title} description:${description}`);
+
       const existingTask = await Task.findByIdAndUpdate(
         { _id: id },
         { $set: { title: title, description: description } },
@@ -199,7 +186,6 @@ class TaskController {
         res.status(403).json("task not found");
         return;
       }
-      console.log("existing task", existingTask);
       res.status(200).json(existingTask);
     } catch (error) {
       console.error("error", error);
@@ -210,7 +196,6 @@ class TaskController {
   public removeTask = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      console.log(id);
       await Task.findByIdAndDelete({ _id: id });
       res.status(200).json("deleted successfully");
     } catch (error) {
@@ -230,7 +215,6 @@ class TaskController {
         { new: true }
       );
 
-      console.log("status", updatedTask?.status);
       res.status(200).json("updated");
     } catch (error) {
       console.error("error", error);

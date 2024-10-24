@@ -3,7 +3,6 @@
 // importing the required modules
 import { Request, Response } from "express";
 import { User } from "../models/user";
-import { Task } from "../models/task";
 import { compare, hashSync } from "bcryptjs";
 import { SignupRequestBody } from "../types/types";
 import { generateToken } from "../middleware/generateJWT";
@@ -62,7 +61,6 @@ class HomeController {
   public postLogin = async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
       const user = await User.findOne({ email });
       if (!user) {
         res.status(403).json({ message: "user not found" });
@@ -78,8 +76,6 @@ class HomeController {
 
       // create the token
       const token = generateToken({ email: user.email, role: user.role });
-
-      console.log(token);
 
       const data = {
         username: user.username,
