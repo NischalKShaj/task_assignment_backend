@@ -5,10 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // checking the environment
-const baseUrl =
-  process.env.NODE_ENV === "development"
-    ? process.env.BASE_URL_DEVMODE
-    : process.env.BASE_URL_PRODUCTION;
+const baseUrl = process.env.BASE_URL_PRODUCTION;
 
 if (!baseUrl) {
   throw new Error("base url not found");
