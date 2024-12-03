@@ -220,6 +220,70 @@ class TaskController {
       console.error("error", error);
     }
   };
+
+  // for the filtering of the task
+  public filterTask = async (req: Request, res: Response) => {
+    try {
+      const { search, id, status } = req.params;
+      console.log("search and status", search, status, id);
+      const searchValue = search === "default" ? "" : search;
+
+      const statusFilter = status === "all" ? null : status;
+
+      // building query object
+      const query: any = {};
+
+      if (id) {
+        query.$or = [{ assignedTo: id }, { createdBy: id }];
+      }
+
+      if (statusFilter) {
+        query.status = statusFilter;
+      }
+
+      if (searchValue) {
+        const managers = await User.find({
+          username: { $regex: searchValue, $options: "i" },
+        }).lean();
+
+        const managerIds = managers.map((manager) => manager._id);
+
+        query.createdBy = { $in: managerIds };
+      }
+
+      const tasks = await Task.find(query);
+
+      let manager: any[] = [];
+      let employee: any[] = [];
+
+      if (tasks.length > 0) {
+        const createdByIds = tasks.map((task) => task.createdBy);
+        const employeeIds = tasks.map((task) => task.assignedTo);
+
+        manager = await User.find({ _id: { $in: createdByIds } });
+        employee = await User.find({ _id: { $in: employeeIds } });
+      }
+
+      const managerMap = new Map(
+        manager.map((m) => [m._id.toString(), m.username])
+      );
+
+      const employeeMap = new Map(
+        employee.map((e) => [e._id.toString(), e.username])
+      );
+
+      const tasksWithDetail = tasks.map((task) => ({
+        ...task,
+        managerName:
+          managerMap.get(task.createdBy.toString()) || "unknown manager",
+        employeeName:
+          employeeMap.get(task.assignedTo.toString()) || "unknown employee",
+      }));
+      res.status(200).json(tasksWithDetail);
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
 }
 
 export const taskController = new TaskController();

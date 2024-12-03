@@ -50,6 +50,13 @@ router.put(
   taskController.updateStatus
 );
 
+// router for filtering the task
+router.get(
+  "/filterData/:id/:status/:search",
+  authenticateUserJwt,
+  taskController.filterTask
+);
+
 // router for logout
 router.get("/logout", authenticateUserJwt, homeController.userLogout);
 
